@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Tech Blog</h2>
+<ul>
+    {% for post in posts %}
+        <li><a href="{% url 'blog:blog_detail' post.slug %}">{{ post.title }}</a> ({{ post.created_at|date:'Y-m-d' }})</li>
+    {% empty %}
+        <li>No blog posts yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

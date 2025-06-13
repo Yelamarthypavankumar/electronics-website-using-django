@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Electronics Store</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<header>
+    <h1>Welcome to Electronics Store</h1>
+    <p>
+        {% if user.is_authenticated %}
+            Welcome, {{ user.username }} |
+            <a href="{% url 'account_logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'account_login' %}">Login</a> |
+            <a href="{% url 'account_signup' %}">Signup</a>
+        {% endif %}
+    </p>
+</header>
+
+{% block content %}
+<section class="hero-banner">
+    <div class="hero-content">
+        <h1>Empower Your Tech Life!</h1>
+        <p>Discover the latest gadgets and exclusive deals.</p>
+        <a href="/products/" class="btn-primary">Shop Now</a>
+    </div>
+</section>
+
+<section class="featured-promotions">
+    <h2>Exclusive Promotions</h2>
+    <div class="promotion-grid">
+        <div class="promotion-item">
+            <img src="{% static 'images/promotion1.jpg' %}" alt="Promotion 1">
+            <h3>iPhone SE</h3>
+            <p>From Rs.87,874</p>
+            <a href="/products/" class="btn-secondary">View More</a>
+        </div>
+        <div class="promotion-item">
+            <img src="{% static 'images/promotion2.jpg' %}" alt="Promotion 2">
+            <h3>Apple Watch</h3>
+            <p>Rs.11,367</p>
+            <a href="/products/" class="btn-secondary">Buy Now</a>
+        </div>
+        <div class="promotion-item">
+            <img src="{% static 'images/promotion3.jpg' %}" alt="Promotion 3">
+            <h3>Mac Mini</h3>
+            <p>Rs.18,414</p>
+            <a href="/products/" class="btn-secondary">Buy Now</a>
+        </div>
+    </div>
+</section>
+
+<section class="trending-products">
+    <h2>Trending Products</h2>
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            <h3>{{ product.name }}</h3>
+            <p>Price: Rs.{{ product.price }}</p>
+            <a href="/products/{{ product.id }}/" class="btn-secondary">View Details</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
+
+</body>
+</html>
+

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+{% block content %}
+<section class="login-container">
+    <div class="login-card">
+        <h2 class="login-title">Sign In</h2>
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+        <div class="social-login">
+            <p>Or login with:</p>
+            <a href="{% provider_login_url 'google' %}" class="social-btn google">Google</a>
+            <a href="{% provider_login_url 'facebook' %}" class="social-btn facebook">Facebook</a>
+        </div>
+        <p class="signup-link">Don't have an account? <a href="/accounts/signup/">Sign up</a></p>
+    </div>
+</section>
+{% endblock %}

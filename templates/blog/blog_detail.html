@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<article>
+    <h2>{{ post.title }}</h2>
+    <p><em>Published: {{ post.created_at|date:'Y-m-d' }}</em></p>
+    <div>{{ post.content|safe }}</div>
+</article>
+<a href="{% url 'blog:blog_list' %}">Back to Blog</a>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<h2>All Products</h2>
+
+<form method="get" style="margin-bottom: 20px;">
+    <input type="text" name="q" placeholder="Search products..." value="{{ request.GET.q }}" style="padding: 5px; width: 200px;">
+    <select name="category" style="padding: 5px;">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:'s' %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary" style="padding: 5px 10px;">Search</button>
+</form>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px;">
+{% for product in products %}
+  <article style="border: 1px solid #ccc; padding: 15px; width: calc(33.333% - 20px); box-sizing: border-box;">
+    <h3>
+      <a href="{% url 'products:product_detail' product.pk %}">
+        {{ product.name }}
+      </a>
+    </h3>
+    <p>{{ product.description }}</p>
+    <p><strong>${{ product.price|floatformat:2 }}</strong></p>
+
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 100%; height: auto;">
+    {% endif %}
+
+    <form class="product-action-form" action="{% url 'shoppingcart:add_to_cart' product.pk %}" method="post" style="display: inline;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Add to Cart</button>
+    </form>
+
+    <form class="product-action-form" action="{% url 'shoppingcart:cash_on_delivery' product.pk %}" method="post" style="display: inline;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-warning">Cash on Delivery</button>
+    </form>
+
+    <a href="{% url 'wishlist:add_to_wishlist' product.id %}" class="btn btn-secondary" style="display: inline;">Add to Wishlist</a>
+  </article>
+{% empty %}
+  <p>No products available.</p>
+{% endfor %}
+</div>
+
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmationModalLabel">Order Confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Received!</p>
+        <p>Your action has been successfully processed.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
+        <a href="{% url 'home' %}" class="btn btn-primary">Go to Home Page</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize the Bootstrap modal object
+    const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+
+    // Select all forms that should trigger the pop-up (both "Add to Cart" and "Cash on Delivery")
+    // I've given them a common class 'product-action-form'
+    const productActionForms = document.querySelectorAll('.product-action-form');
+
+    // Attach an event listener to each form
+    productActionForms.forEach(form => {
+      form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission (which would cause a page reload)
+
+        const currentForm = event.target;
+        const formData = new FormData(currentForm); // Get form data
+
+        // Use the Fetch API to send the form data asynchronously (AJAX)
+        fetch(currentForm.action, {
+          method: currentForm.method, // POST
+          body: formData,
+          headers: {
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken') // Include CSRF token for security
+          }
+        })
+        .then(response => {
+          if (response.ok) { // If the server responds with a 2xx status code (e.g., 200 OK)
+            confirmationModal.show(); // Show the Bootstrap modal pop-up
+          } else {
+            // If the server response is an error (e.g., 400, 500)
+            alert('An error occurred. Please try again.');
+            console.error('Form submission failed:', response.status, response.statusText);
+          }
+        })
+        .catch(error => {
+          // If there's a network error or other problem with the fetch request
+          console.error('Error during fetch:', error);
+          alert('Network error. Please try again.');
+        });
+      });
+    });
+  });
+</script>
+
+{% endblock %}

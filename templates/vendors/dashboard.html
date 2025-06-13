@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Vendor Dashboard</h2>
+<p>Welcome, {{ vendor.name }}!</p>
+<h3>Your Products</h3>
+<ul>
+    {% for vp in products %}
+        <li>{{ vp.product.name }} (Stock: {{ vp.stock }})</li>
+    {% empty %}
+        <li>No products yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
