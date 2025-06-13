@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .cod-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 30px;
+        border-radius: 12px;
+        background: #f9f9f9;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+    }
+    .cod-container h2 {
+        margin-bottom: 20px;
+        color: #2d2d2d;
+    }
+    .product-details {
+        margin-bottom: 30px;
+    }
+    .product-details strong {
+        color: #444;
+    }
+    label {
+        display: block;
+        margin-top: 15px;
+        font-weight: bold;
+    }
+    input, textarea, select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1rem;
+    }
+    button {
+        margin-top: 25px;
+        padding: 12px 20px;
+        background-color: #28a745;
+        color: white;
+        font-size: 1rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    button:hover {
+        background-color: #218838;
+    }
+</style>
+
+<div class="cod-container">
+    <h2>🚚 Cash on Delivery</h2>
+    <div class="product-details">
+        <p><strong>Product:</strong> {{ product.name }}</p>
+        <p><strong>Price:</strong> ₹{{ product.price }}</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" required pattern="[0-9]{10}" placeholder="10-digit number">
+
+        <label for="lane">Lane / Street</label>
+        <input type="text" id="lane" name="lane" required>
+
+        <label for="building">Building / Apartment</label>
+        <input type="text" id="building" name="building" required>
+
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" required>
+
+        <label for="state">State</label>
+        <input type="text" id="state" name="state" required>
+
+        <label for="pincode">Pincode</label>
+        <input type="text" id="pincode" name="pincode" required pattern="[0-9]{6}" placeholder="6-digit PIN">
+
+        <button type="submit">Place Order</button>
+    </form>
+</div>
+{% endblock %}
+

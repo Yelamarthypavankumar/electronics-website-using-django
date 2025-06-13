@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2 class="text-center">Our Products</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+  {% for product in products %}
+    <div style="border: 1px solid #ccc; border-radius: 10px; width: 300px; padding: 15px; text-align: center;">
+      <h4>{{ product.name }}</h4>
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 100%; height: 200px; object-fit: cover;">
+      <p>{{ product.description|truncatechars:100 }} <a href="#">See more</a></p>
+      <p><strong>${{ product.price }}</strong></p>
+      <div style="margin-top: 10px;">
+        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>
+        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success">Buy Now</a>
+      </div>
+    </div>
+  {% empty %}
+    <p>No products available.</p>
+  {% endfor %}
+</div>
+{% endblock %}
+
